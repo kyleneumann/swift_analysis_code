@@ -1,0 +1,76 @@
+Logging to file: ximage.log
+[XIMAGE>  read total.fits 
+ Telescope SWIFT XRT NONE
+ Image size = 1000 x 1000 pixels
+ Image rebin = 1.000
+ Image center = 500.5, 500.5
+ Reading an image
+  Image level, min = 0.0000000 max = 18.000000
+ Copied MAP1 to MAP9
+[XIMAGE>  detect/bright/back_box_size=32/prob_limit=4e-4/snr=2.0/source_box_size=4. 
+ Calculating background: Poisson statistics assumed
+ Background box size =  32
+ Background =8.8786E-03 cts/original-pixel
+            =8.8786E-03 cts/image-pixel
+            =7.9643E-04 cts/sqarcmin/s
+            =1.2294E-06 cts/original-pixel/s
+ Source box size (orig pix):    4 (image pix):    4
+ >>>>> Searching for excesses
+    260 excesses found
+ >>>>> Removing contiguous sources
+ Using slow contiguous search
+  Using average energy for PSF:    1.00000000
+         26 excesses left
+ >>>>> Sort by radius
+ >>>>> Applying thresholds
+  Using average energy for PSF:    1.00000000
+  snr threshold =    2.00000000
+  bgnd fluctuation probability limit =    3.99999990E-04
+ >>>>> removing duplicates
+   #   count/s    err         pixel      Vig  RA(2000)   Dec(2000)   Err  H-Box
+                             x     y     corr                        rad  (sec)
+    1 7.03E-02+/-3.4E-03   472.6   557.9 1.01 23 24 48.0 +61 11 13.2  -1     39
+    2 3.09E-03+/-9.7E-04   186.5   405.2 1.47 23 26 20.9 +61 05 10.9  -1     13
+    3 2.41E-03+/-8.5E-04   313.8   784.0 1.53 23 25 40.1 +61 20 05.3  -1     15
+[XIMAGE>  sosta/detect_sources 
+ Using MAP1
+ Using a locally computed background
+                    X = 472.63806    Y = 557.94666
+  Using average energy for PSF:    1.00000000
+ Source half-box for 0.65 EEF is    5.2 pixels
+        Half-box for 0.90 EEF is   17.8 pixels
+ Total # of counts 334.00000 (in 110 elemental sq pixels)
+ Background inner radius:   18.8 pixels; outer radius:   35.7 pixels
+ Innerbox counts 473.00000 in 1406 sq or pixels
+ Outerbox counts 540.00000 in 5112 sq or pixels
+ Background counts 67.000000 in 3706 sq pixels
+ s.i. corrected for PSF + sampling dead time
+                                + vignetting -> 8.033E-02 +/- 4.4E-03 c/sec <-
+ Signal to Noise Ratio             :            1.817E+01
+                    X = 186.50000    Y = 405.25000
+ Source half-box for 0.57 EEF is    4.0 pixels
+        Half-box for 0.90 EEF is   11.7 pixels
+ Total # of counts 12.000000 (in 64 elemental sq pixels)
+ Background inner radius:   12.3 pixels; outer radius:   23.4 pixels
+ Innerbox counts 16.000000 in 600 sq or pixels
+ Outerbox counts 20.000000 in 2162 sq or pixels
+ Background counts 4.0000000 in 1562 sq pixels
+ s.i. corrected for PSF + sampling dead time
+                                + vignetting -> 5.741E-03 +/- 1.7E-03 c/sec <-
+ Signal to Noise Ratio             :            3.416E+00
+                                                 Poisson    Gauss
+ Pr. that source is a fluctuation of back. :    2.22E-16   0.00E+00
+                    X = 313.75000    Y = 784.00000
+ Source half-box for 0.57 EEF is    3.9 pixels
+        Half-box for 0.90 EEF is   11.5 pixels
+ Total # of counts 7.0000000 (in 56 elemental sq pixels)
+ Background inner radius:   12.1 pixels; outer radius:   23.0 pixels
+ Innerbox counts 15.000000 in 600 sq or pixels
+ Outerbox counts 19.000000 in 2162 sq or pixels
+ Background counts 4.0000000 in 1562 sq pixels
+ s.i. corrected for PSF + sampling dead time
+                                + vignetting -> 3.422E-03 +/- 1.3E-03 c/sec <-
+ Signal to Noise Ratio             :            2.591E+00
+                                                 Poisson    Gauss
+ Pr. that source is a fluctuation of back. :    2.18E-10   0.00E+00
+[XIMAGE>  quit 

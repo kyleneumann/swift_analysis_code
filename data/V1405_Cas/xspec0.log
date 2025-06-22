@@ -1,0 +1,131 @@
+#XSPEC version: 12.14.0h
+#Build Date/Time: Thu Jun 13 20:12:54 2024
+#
+!XSPEC12> statistic cstat 
+#Default fit statistic is set to: C-Statistic
+#   This will apply to all current and newly loaded spectra.
+#
+!XSPEC12> query yes 
+#
+!XSPEC12> data spec0.pi 
+#***Warning: Detected response matrix energy bin value = 0 (or neg).
+#     XSPEC will instead use small finite value (response file will not be altered).
+#
+#1 spectrum  in use
+# 
+#Spectral Data File: spec0.pi  Spectrum 1
+#Net count rate (cts/s) for Spectrum:1  5.448e-02 +/- 2.759e-03 (99.1 % total)
+# Assigned to Data Group 1 and Plot Group 1
+#  Noticed Channels:  1-460
+#  Telescope: SWIFT Instrument: XRT  Channel Type: PI
+#  Exposure Time: 7222 sec
+# Using fit statistic: cstat
+# Using Background File                back0.pi
+#  Background Exposure Time: 7222 sec
+# Using Response (RMF) File            rmf0.rmf for Source 1
+# Using Auxiliary Response (ARF) File  arf0.arf
+#
+#
+!XSPEC12>                          ignore **-0.3 10.-** 
+#     7 channels (1-7) ignored in spectrum #     1
+#    25 channels (436-460) ignored in spectrum #     1
+#
+#
+!XSPEC12>  ignore bad 
+#
+#ignore:   350 channels ignored from  source number 1
+#
+!XSPEC12>  setplot energy 
+#
+!XSPEC12>  setplot ylog 
+#
+!XSPEC12>                          mo tbabs*cflux*po 
+#
+#Input parameter value, delta, min, bot, top, and max values for ...
+#              1      0.001(      0.01)          0          0     100000      1e+06
+#            0.5       -0.1(     0.005)          0          0      1e+06      1e+06
+#             10       -0.1(       0.1)          0          0      1e+06      1e+06
+#            -12       0.01(      0.12)       -100       -100        100        100
+#              1       0.01(      0.01)         -3         -2          9         10
+#              1       0.01(      0.01)          0          0      1e+20      1e+24
+#
+#========================================================================
+#Model TBabs<1>*cflux<2>*powerlaw<3> Source No.: 1   Active/On
+#Model Model Component  Parameter  Unit     Value
+# par  comp
+#   1    1   TBabs      nH         10^22    0.745000     frozen
+#   2    2   cflux      Emin       keV      0.300000     frozen
+#   3    2   cflux      Emax       keV      10.0000      frozen
+#   4    2   cflux      lg10Flux   cgs      -13.0000     +/-  0.0          
+#   5    3   powerlaw   PhoIndex            2.00000      +/-  0.0          
+#   6    3   powerlaw   norm                1.00000      frozen
+#________________________________________________________________________
+#
+#
+#Fit statistic  : C-Statistic                 2318.68     using 103 bins.
+#
+#Test statistic : Chi-Squared                  358.94     using 103 bins.
+# Null hypothesis probability of 1.37e-30 with 101 degrees of freedom
+# Current data and model not fit yet.
+#
+!XSPEC12>  fit 5000 
+#                                   Parameters
+#C-Statistic  |beta|/N    Lvl    4:lg10Flux    5:PhoIndex
+#2164.02      65.8007      -3      -12.3668       2.72831
+#2032.51      81.4782      -4      -11.8199       3.18561
+#1893.15      80.1747      -5      -11.1843       3.93430
+#1573.43      85.2836      -6      -10.2952       5.24543
+#1206.23      133.119      -7      -9.64105       6.46383
+#925.903      151.052      -8      -9.15125       7.58830
+#720.872      148.239      -9      -8.72612       8.62894
+#611.917      112.807     -10      -8.38821       9.31590
+#604.973      23.2046       0      -8.36089       9.39325
+#599.278      20.8237       0      -8.33604       9.46007
+#597.004      19.481        0      -8.31413       9.48957
+#596.181      23.3655       0      -8.31431       9.49904
+#596.134      21.8112       0      -8.31426       9.49961
+#596.112      21.7551       0      -8.31420       9.49989
+#596.107      21.7431       0      -8.31414       9.49996
+#==============================
+# Variances and Principal Axes
+#                 4        5  
+# 5.2295E-04|  0.9743  -0.2252  
+# 2.4040E-02|  0.2252   0.9743  
+#------------------------------
+#
+#========================
+#  Covariance Matrix
+#        1           2   
+#   1.715e-03   5.159e-03
+#   5.159e-03   2.285e-02
+#------------------------
+#
+#========================================================================
+#Model TBabs<1>*cflux<2>*powerlaw<3> Source No.: 1   Active/On
+#Model Model Component  Parameter  Unit     Value
+# par  comp
+#   1    1   TBabs      nH         10^22    0.745000     frozen
+#   2    2   cflux      Emin       keV      0.300000     frozen
+#   3    2   cflux      Emax       keV      10.0000      frozen
+#   4    2   cflux      lg10Flux   cgs      -8.31414     +/-  4.14163E-02  
+#   5    3   powerlaw   PhoIndex            9.49996      +/-  0.151154     
+#   6    3   powerlaw   norm                1.00000      frozen
+#________________________________________________________________________
+#
+#
+#Fit statistic  : C-Statistic                  596.11     using 103 bins.
+#
+#Test statistic : Chi-Squared                 1542.12     using 103 bins.
+# Null hypothesis probability of 2.75e-256 with 101 degrees of freedom
+#
+!XSPEC12> 
+#
+!XSPEC12>  cpd plot0.ps/cps 
+#
+!XSPEC12>  plot ufspec 
+#
+!XSPEC12>  cpd none 
+#
+!XSPEC12>  quit 
+# XSPEC: quit
+#

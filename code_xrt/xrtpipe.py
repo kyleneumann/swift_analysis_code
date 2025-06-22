@@ -1,5 +1,13 @@
 import os as os
 
+print(20*"%")
+print("This code process XRT level one data into processed data. \n" \
+      "Code has the capabilities to save all output data or delete \n" \
+      "everythiong except for event files and exposure maps. Will \n" \
+      "output data in [ObsID]ref subdirectories and will skip an \n" \
+      "observation if a reference subdirectory already exists.")
+print(20*"%","\n")
+
 # os.system("export HEADASNOQUERY= \nexport HEADASPROMPT=/dev/null")
 keep_all = input("Keep all output files? [y/n]: ")
 if keep_all == "n" or keep_all == "N":
@@ -17,10 +25,17 @@ print(mode)
 startpath=os.getcwd()+"/"
 # startpath="/Users/kdn5172/Desktop/"
 os.chdir(startpath)
-os.system("ls")
+os.system("ls -d */")
 specpath=input("Enter data directory: ")
 totpath=startpath+specpath
 os.chdir(totpath)
+
+os.system("ls -d */")
+outpath = input("Enter output directory [NONE]: ")
+outpath = totpath+outpath
+if outpath[-1] != "/": outpath+="/"
+
+if not os.path.isdir(outpath): os.system(f"mkdir {outpath}")
 
 #Getting event designation for steminputs
 for dirpath, dirnames, filenames in os.walk(totpath):
@@ -33,21 +48,21 @@ for dirpath, dirnames, filenames in os.walk(totpath):
         thisdir = os.path.abspath(".")
         print(thisdir)
         
-        if not os.path.exists(thisdir+'ref'):
+        if not os.path.exists(f'{outpath}{thisdir}ref'):
             print("Will create a new directory for Xrtpipeline output")
-            os.system("mkdir "+thisdir+'ref')
+            os.system(f"mkdir {outpath}{thisdir}ref")
         else:
             print("Xrtpiptline output already exists. Skipping iteration")
             continue
         
-        pipel='xrtpipeline indir='+thisdir+' outdir='+thisdir+'ref steminputs='+stemp+' chatter=2 cleanup=yes '
+        pipel=f'xrtpipeline indir={thisdir} outdir={outpath}{thisdir}ref steminputs={stemp} chatter=2 cleanup=yes'
         pipel=pipel+' srcra=OBJECT srcdec=OBJECT createexpomap=yes exprpcgrade="0-12" exprwtgrade="0-2" clobber=yes'
         pipel=pipel+' gtiexpr="Vod1.ge.29.82.and.Vod1.le.30.25.and.Vod2.ge.29.3.and.Vod2.le.29.80.and.Vrd1.ge.16.40.and.Vrd1.le.16.80.and.Vrd2.ge.16.45.and.Vrd2.le.16.90.and.CCDTemp.ge.-102.and.CCDTemp.le.-50.0.and.ANG_DIST.le.0.3"'
         os.system(pipel)
 
 if keep_all == "n":
     print("Deleting unnecessary files")
-    for dirpath, dirnames, filenames in os.walk(totpath):
+    for dirpath, dirnames, filenames in os.walk(outpath):
         os.chdir(dirpath)
         
         thisdir = dirpath.split("/")[-1]

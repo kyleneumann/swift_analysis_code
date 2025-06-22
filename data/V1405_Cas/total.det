@@ -1,0 +1,17 @@
+! Field Name     : PNVJ23244760+6111140
+! Instrument     : SWIFT XRT NONE
+! No of sources  : 3
+! Exposure (sec) : 7222.1529
+! Input file     : total.fits
+! Image zoom     : 1.0000  
+! Back/orig-pix/s: 1.2293604E-06
+! Equinox        : 2000
+! RA  Image Center: 351.16220
+! Dec Image Center: 61.149410
+! Start Time : 2024-10-23T16:23:36.00
+! End Time   : 2025-03-26T21:21:52.00
+!  #   count/s    err         pixel      Vig  RA(2000)   Dec(2000)   Err  H-Box
+!                            x     y     corr                        rad  (sec)    prob    snr
+    1 7.03E-02+/-3.4E-03 472.63806 557.94666 1.01 23 24 48.013 +61 11 13.277  -1     39 0.000E+00 2.070E+01
+    2 3.09E-03+/-9.7E-04 186.50000 405.25000 1.47 23 26 20.991 +61 05 10.938  -1     13 3.630E-10 3.196E+00
+    3 2.41E-03+/-8.5E-04 313.75000 784.00000 1.53 23 25 40.110 +61 20 05.312  -1     15 2.091E-07 2.823E+00
