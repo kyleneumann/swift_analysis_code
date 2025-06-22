@@ -1,10 +1,11 @@
 import os
 import numpy as np
 
-###
-print("\n"+"%"*30+"\nThis code removes all processed files other than the original observation files\n"+"%"*30+"\n")
-# It's a reset
-###
+print(20*"%")
+print("This code will delete all (or most) processed files. \n" \
+      "Careful how and where you activate this code. Meant \n"
+      "for heavy fast clean up of data files.")
+print(20*"%","\n")
 
 
 startpath=os.getcwd()+"/"
@@ -33,17 +34,17 @@ for dirpath, dirnames, filenames in os.walk(totpath):
 
     if len(filenames) == 0: continue
 
-    if "old_ignore" in dirpath.split('/') or "save.txt" in filenames:
+    if "old_ignore" in dirpath.split('/') or "save.txt" in filenames or "Init" in dirpath or "UV" in dirpath or "skip.txt" in filenames:
         continue
 
     if any(file.endswith('.evt') for file in filenames):
         print("Removing processed files from "+dirpath)
     else:
-        if "jpeg_dir" in dirpath:
+        if "png_dir" in dirpath:
             os.system("rm *")
         elif any(file.endswith('time.csv') for file in filenames):
             for filename in filenames:
-                if filename.endswith("time.csv") or filename.endswith("sosta.csv") or filename.endswith("overlap.csv"):
+                if filename.endswith("time.csv") or filename.endswith("table.csv") or filename.endswith("overlap.csv"):
                     os.system("rm "+filename)
         continue
 

@@ -1,4 +1,28 @@
 import os as os
+import subprocess
+import logging
+logging.basicConfig(level=logging.INFO)
+
+def ximage_run(ximage_input):
+    try:
+        process = subprocess.Popen(
+            ["ximage"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        # Send commands and capture output
+
+        stdout, stderr = process.communicate(input=ximage_input)
+
+        print("XIMAGE STDOUT:\n", stdout)
+
+        return stdout
+
+    except Exception as e:
+        logging.error(f"Error running XIMAGE commands: {e}")
+        return ""
 
 #os.system("export HEADASNOQUERY= \nexport HEADASPROMPT=/dev/null")
 startpath="/Users/kdn5172/Desktop/"
@@ -9,33 +33,16 @@ os.chdir(startpath)
 import sys
 n = len(sys.argv)
 
-if n==4 or n==6:
-    specpath=sys.argv[1]
-    choice=sys.argv[2]
-    parallel=sys.argv[3]
-    
-    totpath=startpath+specpath
-    os.chdir(totpath)
+if n == 1:
+    print("\n",20*"%")
+    print("This code will merge all exposure maps within a directory. \n" \
+        "WARNING: exposure map summing time increases nonlinearly \n" \
+        "with more observations. Code allows for parallelization using \n" \
+        "the 'in_progress.txt'. If code crashes or stops, please remove \n" \
+        "progress.txt before attempting again.")
+    print(20*"%","\n")
 
-    if choice == "Y" or choice == "y":
-        choice = "y"
-    else:
-        choice = "n"
-    if parallel == "Y" or parallel == "y":
-        parallel = "y"
-    else:
-        parallel = "n"
-
-    if parallel == "y":
-        n_term=sys.argv[4]
-        par_index=sys.argv[5]
-        if n_term < 2:
-            raise ValueError("input must be greater than 2.")
-        if par_index < 1 and par_index > n_term:
-            raise ValueError("Integer must be within the range of 1 - "+str(n_term)+".")
-    
-else:
-    os.system("ls")
+    os.system("ls -d */")
     specpath=input("Enter data directory: ")
     totpath=startpath+specpath
     os.chdir(totpath)
@@ -47,65 +54,64 @@ else:
     else:
         choice = "n"
 
-    parallel = input("Running parallel? [y/n]: ")
-    if parallel == "Y" or parallel == "y":
-        parallel = "y"
-    else:
-        parallel = "n"
+    mode = input("Which mode do you want to process? [pc/wt/both]: ")
+else:
+    specpath=sys.argv[1]
+    choice=sys.argv[2]
+    mode=sys.argv[3]
 
-    if parallel == "y":
-        n_term = int(input("How many terminals are in use? [+2]: "))
-        if n_term < 2:
-            raise ValueError("input must be greater than 2.")
-        par_index = int(input("What index is this? [1-"+str(n_term)+"]: "))
-        if par_index < 1 and par_index > n_term:
-            raise ValueError("Integer must be within the range of 1 - "+str(n_term)+".")
-    
-j = 0
+    totpath=startpath+specpath
+    os.chdir(totpath)
+
+    if choice == "Y" or choice == "y":
+        choice = "y"
+    else:
+        choice = "n"
+
+if choice == "y":
+    if mode != "wt":
+        # os.system('find . -type f -name "total.img" -exec rm {} +')
+        os.system("find . -type d -name '*old_ignore*' -prune -o -type f -name 'total.img' -exec rm -v {} +")
+    if mode != "pc":
+        os.system("find . -type d -name '*old_ignore*' -prune -o -type f -name 'total_wt.img' -exec rm -v {} +")
 
 for dirpath, dirnames, filenames in os.walk(totpath):
     os.chdir(dirpath)
 
-    cwd = dirpath.split("/")[-1]
-    if cwd == "old_ignore" or os.path.isfile("skip.txt"):
-        continue
+    if "old_ignore" in dirpath or os.path.isfile("skip.txt") or "dataInit" in dirpath: continue
+    
+    if os.path.isfile("progress.txt"): continue
+    else:
+        subprocess.run(["touch","in_progress.txt"])
 
     print(dirpath)
-    
-    if parallel == "y":
-        if j == n_term: 
-            j = 0
-        j += 1
-
-        print("j index:",j)
-        
-        if j != par_index:
-            continue
 
     os.chdir(dirpath)
 
     prefix_list = []
+    prefix_list_wt = []
 
-    if os.path.isfile(dirpath+"/total.img"):
-        if choice =="n": continue
-        if choice == "y": 
-            os.system("rm total.img")
-    else:
-        overwrite_bool = False
+    if os.path.isfile(dirpath+"/total.img") and mode != "wt":
+        os.system("rm in_progress.txt")
+        continue
+    
     for filename in [f for f in filenames if f.endswith("po_ex.img")]:
         prefix = filename[:-9]
-        if filename[-13:-11] == "pc":
+        if filename[-13:-11] == "pc" and mode != "wt":
             prefix_list.append(prefix)
+        elif filename[-13:-11] == "wt" and mode != "pc":
+            prefix_list_wt.append(prefix)
 
     #print("test1")
 
     if len(prefix_list) == 0:
+        os.system("rm in_progress.txt")
         continue
     elif len(prefix_list) > 80:
         prefix_list = prefix_list[:80]
     
-    mergstr = "ximage <<EOF \n"
-
+    # mergstr = "ximage <<EOF \n"
+    mergstr = ""
 
     for i,prefix in enumerate(prefix_list):
         name = prefix+"po_ex.img"    
@@ -117,10 +123,41 @@ for dirpath, dirnames, filenames in os.walk(totpath):
     mergstr += "write/fits total.img\nquit\n\n\n\nEOF>>"
 
     #print(mergstr)
-    os.system(mergstr+"\n")
+    # os.system(mergstr+"\n")
+    stdout = ximage_run(mergstr)
 
     print("Done ximage")
 
     os.system("fparkey F total.img+0 VIGNAPP add=yes")
 
     print("Done fparkey")
+
+    if len(prefix_list_wt) == 0:
+        os.system("rm in_progress.txt")
+        continue
+    elif len(prefix_list_wt) > 80:
+        prefix_list_wt = prefix_list_wt[:80]
+    
+    # mergstr = "ximage <<EOF \n"
+    mergstr = ""
+
+    for i,prefix in enumerate(prefix_list_wt):
+        name = prefix+"po_ex.img"    
+        if i == 0:
+            mergstr += "read "+name+" \n"
+        else:
+            mergstr += "read "+name+" \nsum\nsave\n"
+    
+    mergstr += "write/fits total_wt.img\nquit\n\n\n\nEOF>>"
+
+    #print(mergstr)
+    # os.system(mergstr+"\n")
+    stdout = ximage_run(mergstr)
+
+    print("Done ximage")
+
+    os.system("fparkey F total_wt.img+0 VIGNAPP add=yes")
+
+    print("Done fparkey")
+
+    os.system("rm in_progress.txt")

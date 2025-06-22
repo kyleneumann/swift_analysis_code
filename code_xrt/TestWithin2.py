@@ -80,7 +80,9 @@ def TestWithin(pointRA,pointDec,SN,cenRA,cenDec,SMA,SMI,angi,Title='You should g
         ax.set_ylabel('South <    Dec(arcsec)-cen     > North')
         ax.set_title(Title)
         ax.grid()
-        plt.savefig(Title[5:]+'.pdf',format='pdf',bbox_inches='tight')
+        if "4FGL" in Title: Title = Title.replace("4FGL ","")
+        
+        plt.savefig(Title+'.pdf',format='pdf',bbox_inches='tight')
         
         #plt.show()
     
