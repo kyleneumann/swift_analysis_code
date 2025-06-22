@@ -227,8 +227,8 @@ for dirpath, dirnames, filenames in os.walk(totpath):
         takeNH=foundNH/1e22
         nh_ls.append(takeNH)
 
-df["exposure"] = exposure_ls
-df["nh"] = nh_ls
+# df["exposure"] = exposure_ls
+# df["nh"] = nh_ls
 
 os.chdir(totpath)
 df.to_csv("xsel_table.csv",index=False,na_rep="nan")

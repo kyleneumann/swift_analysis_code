@@ -88,7 +88,7 @@ stat = "cstat"
 
 cols = [f for f in df_main.columns if f != "In95"]
 
-addcols = ["counts","logFX","dlogFX","PhoIndex","dPhoIndex","cstat","bins","Steppar"]
+addcols = ["exposure","counts","nh","logFX","dlogFX","PhoIndex","dPhoIndex","cstat","bins","Steppar"]
 
 cols += addcols
 
@@ -111,16 +111,16 @@ for dirpath, dirnames, filenames in os.walk(totpath):
 
     if not os.path.isfile("nh.log"): continue
 
-    # openfile = open("nh.log","r")
-    # openlines = openfile.readlines()
-    # openfile.close()
-    # for line in openlines:
-    #     data = line.split()
-    #     try:
-    #         if data[0]=="h1_nh_HI4PI.fits":
-    #             nh = float(data[-1])/1e22
-    #             break
-    #     except:pass
+    openfile = open("nh.log","r")
+    openlines = openfile.readlines()
+    openfile.close()
+    for line in openlines:
+        data = line.split()
+        try:
+            if data[0]=="h1_nh_HI4PI.fits":
+                nh = float(data[-1])/1e22
+                break
+        except:pass
 
     for filename in [f for f in filenames if (f.endswith(".pi") and f.startswith("spec"))]:
         index = int(filename.replace(".pi","").replace("spec",""))
@@ -138,13 +138,27 @@ for dirpath, dirnames, filenames in os.walk(totpath):
             #     df
             #     raise ValueError(f"Something broke for {src}/{index}")
             
-            nh = df.nh
+            # nh = df.nh
             xspec_cmd = (f"log xspec{index}.log \nstatistic {stat} \nquery yes \ndata {filename} \n \
                         ignore **-0.3 10.-** \n ignore bad \n setplot energy \n setplot ylog \n \
                         mo tbabs*cflux*po \n{nh} -1 \n 0.3 \n 10.0 \n -13 \n 2 \n 1 -1 \n fit 5000 \n")
 
+
             if choice3 == "y":
-                xspec_cmd += "chatter 0 0 \n parallel steppar 4 \n steppar 4 -14 -11 400 5 -1 4 400 \n y \n \n chatter 10 10 \n fit \n error 4 5 \n" 
+                xspec_cmd2 = f"\n cpd plot{index}.ps/cps \n plot ufspec \n cpd none \n quit \n \n \n"
+
+                stout = terminal_run(program="xspec",cmd=xspec_cmd+xspec_cmd2,print_out=False)
+
+                with open(f"xspec{index}.log") as xlog:
+                    for line in xlog:
+                        if "cflux" in line and "lg10Flux" in line:
+                            data = line.split()
+                            Fx = float(data[6])
+                        elif "powerlaw" in line and "PhoIndex" in line:
+                            data = line.split()
+                            pI = float(data[5])
+
+                xspec_cmd += f"chatter 0 0 \n parallel steppar 4 \n steppar 4 {Fx-1} {Fx+1} 200 5 {pI-1} {pI+1} 200 \n y \n \n chatter 10 10 \n fit \n error 4 5 \n" 
 
             if choice2 == "y":
                 xspec_cmd += f"\n cpd plot{index}.ps/cps \n plot ufspec \n cpd none \n quit \n \n \n"
@@ -167,26 +181,74 @@ for dirpath, dirnames, filenames in os.walk(totpath):
             steppar = False
             steps = True
 
-        
+        exposure = 0
+
+        # with open(f"xspec{index}.log") as xlog:
+        #     for line in xlog:
+        #         if "Net" in line and "count" in line:
+        #             data = line.split()
+        #             cps = float(data[6])
+        #         elif "Exposure" in line and "Time:" in line and "Background" not in line:
+        #             data = line.split()
+        #             # print(data)
+        #             exposure = float(data[3])
+        #             df["exposure"] = exposure
+        #             df["counts"] = round(cps*exposure,0)
+        #             df["nh"] = nh
+        #         elif steps and "cflux" in line and "lg10Flux" in line:
+        #             data = line.split()
+        #             df["logFX"] = float(data[6])
+        #             df["dlogFX"] = float(data[8])
+        #         elif steps and "powerlaw" in line and "PhoIndex" in line:
+        #             data = line.split()
+        #             df["PhoIndex"] = float(data[5])
+        #             df["dPhoIndex"] = float(data[7])
+        #         elif steps and "C-Statistic" in line and "bins" in line:
+        #             data = line.split()
+        #             df["cstat"] = float(data[4])
+        #             df["bins"] = int(data[6])
+        #         elif "parallel" in line and "steppar" in line: 
+        #             steps = True
         with open(f"xspec{index}.log") as xlog:
             for line in xlog:
                 if "Net" in line and "count" in line:
                     data = line.split()
                     cps = float(data[6])
-                    df["counts"] = round(cps*df["exposure"],0)
-                elif steps and "cflux" in line and "lg10Flux" in line:
+                elif "Exposure" in line and "Time:" in line and "Background" not in line:
+                    data = line.split()
+                    # print(data)
+                    exposure = float(data[3])
+                    df["exposure"] = exposure
+                    df["counts"] = round(cps*exposure,0)
+                    df["nh"] = nh
+                elif "cflux" in line and "lg10Flux" in line:
                     data = line.split()
                     df["logFX"] = float(data[6])
                     df["dlogFX"] = float(data[8])
-                elif steps and "powerlaw" in line and "PhoIndex" in line:
+                elif "powerlaw" in line and "PhoIndex" in line:
                     data = line.split()
                     df["PhoIndex"] = float(data[5])
                     df["dPhoIndex"] = float(data[7])
-                elif steps and "C-Statistic" in line and "bins" in line:
+                elif "C-Statistic" in line and "bins" in line:
                     data = line.split()
                     df["cstat"] = float(data[4])
                     df["bins"] = int(data[6])
-                elif "parallel" in line and "steppar" in line: steps = True
+                elif "error 4 5" in line and steppar:
+                    steps = True
+                    df["dlogFX"] = -1
+                    df["dPhoIndex"] = -1
+                elif steps and "4" in line and "#" in line and df["dlogFX"] == -1:
+                    data = line.split()
+                    error = data[4]
+                    print(data)
+                    print(error)
+                    error = np.mean(abs(np.array(eval(error))))
+                    df["dlogFX"] = error
+                elif steps and "5" in line and "#" in line and df["dPhoIndex"] == -1:
+                    data = line.split()
+                    error = data[4]
+                    error = np.mean(abs(np.array(eval(error))))
+                    df["dPhoIndex"] = error
 
         df["Steppar"] = steppar
         for col in cols:

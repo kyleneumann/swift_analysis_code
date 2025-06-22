@@ -1,4 +1,4 @@
-!xselect 14:23:55 20-Jun-2025
+!xselect 21:42:52 21-Jun-2025
 xsel:SUZAKU >  read event
 > Enter the Event file dir >[./] ./
 > Enter Event file list >[total.evt]  total.evt

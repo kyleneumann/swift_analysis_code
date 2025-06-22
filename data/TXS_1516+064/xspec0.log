@@ -110,6 +110,60 @@
 #Test statistic : Chi-Squared                  385.01     using 300 bins.
 # Null hypothesis probability of 4.95e-04 with 298 degrees of freedom
 #
+!XSPEC12> chatter 0 0 
+#
+!XSPEC12>  parallel steppar 4 
+#
+!XSPEC12>  steppar 4 -12.0366 -10.0366 200 5 1.02927 3.02927 200 
+#
+!XSPEC12>  y 
+#invalid command name "y"
+#
+!XSPEC12>  
+#
+!XSPEC12>  chatter 10 10 
+#
+!XSPEC12>  fit 
+#                                   Parameters
+#C-Statistic  |beta|/N    Lvl    4:lg10Flux    5:PhoIndex
+#278.423      0.00320203   -3      -11.0366       2.02927
+#==============================
+# Variances and Principal Axes
+#                 4        5  
+# 2.1337E-04|  0.9873   0.1587  
+# 2.7974E-03| -0.1587   0.9873  
+#------------------------------
+#
+#========================
+#  Covariance Matrix
+#        1           2   
+#   2.784e-04  -4.048e-04
+#  -4.048e-04   2.732e-03
+#------------------------
+#
+#========================================================================
+#Model TBabs<1>*cflux<2>*powerlaw<3> Source No.: 1   Active/On
+#Model Model Component  Parameter  Unit     Value
+# par  comp
+#   1    1   TBabs      nH         10^22    2.99000E-02  frozen
+#   2    2   cflux      Emin       keV      0.300000     frozen
+#   3    2   cflux      Emax       keV      10.0000      frozen
+#   4    2   cflux      lg10Flux   cgs      -11.0366     +/-  1.66864E-02  
+#   5    3   powerlaw   PhoIndex            2.02927      +/-  5.22715E-02  
+#   6    3   powerlaw   norm                1.00000      frozen
+#________________________________________________________________________
+#
+#
+#Fit statistic  : C-Statistic                  278.42     using 300 bins.
+#
+#Test statistic : Chi-Squared                  385.01     using 300 bins.
+# Null hypothesis probability of 4.95e-04 with 298 degrees of freedom
+#
+!XSPEC12>  error 4 5 
+# Parameter   Confidence Range (2.706)
+#     4     -11.0643      -11.009    (-0.0276597,0.0276234)
+#     5      1.94529      2.11384    (-0.0839819,0.0845703)
+#
 !XSPEC12> 
 #
 !XSPEC12>  cpd plot0.ps/cps 
