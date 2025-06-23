@@ -15,3 +15,6 @@ Starting from the initial observation folders, utilize xrtpipe.py to process all
 
 ## UVOT Analysis
 Currently only contains the light curve analysis code. Move every UVOT sky image to the same directory and the code will generate a totaled light curve per filter given an extraction source region and background region.
+
+## data folder
+Example folder of sources to display how xrt_steps.py and others will work along with file organization options. TXS 1516+064 will produce a spectrum with a very well done powerlaw fit while V1405 Cas will fail to properly fit to a powerlaw. Both will be included within the final processed tables. 
