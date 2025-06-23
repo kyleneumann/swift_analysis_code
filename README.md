@@ -7,7 +7,7 @@ The directory contains code to run XRT and UVOT processing and analysis. Include
 
 # Required programs and packages
 
-This code requires HEASoft and FTOOLS to operate. Without these, nothing will work. Other than these, most programs require standard Python packages, such as astropy, pandas, numpy, os, subprocess, etc. Optional packages include astroquery and swifttools. These are required for several programs, but not any reqiured analysis steps.
+This code requires HEASoft and FTOOLS to operate. Without these, nothing will work. Other than these, most programs require standard Python packages, such as astropy, pandas, numpy, os, subprocess, regions, matplotlib, etc. Optional packages include astroquery and swifttools. These are required for several programs, but not any reqiured analysis steps.
 
 ## Data Downloading
 Swift_TOO.ipynb is a notebook that will allow you to download XRT, UVOT, and/or BAT data of a source over a given date range. This data will come either from the UK Science Data Center (uksdc=True) or HEASARC (uksdc=False).
