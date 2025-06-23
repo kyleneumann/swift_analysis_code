@@ -9,6 +9,8 @@ Program : xrtpipe.py : executes xrtpipeline on dataInit folders, generates dataR
 	
 Directory : dataRef  : refined data processed with xrtpipeline, move all [obsID]ref folders (optional)
 
+Directory : dataUV : folder containing UVOT data (optional)
+
 Directory : data : directory of sources containing refined data : name not relevant
 
 Program : img_merger.py : use Ximage to merge all the ex.img exposure map files in each dataSRC subdirectory
@@ -17,8 +19,6 @@ Program : img_merger.py : use Ximage to merge all the ex.img exposure map files 
 Program : evt_merger.py : use Xselect to merge all .evt files in each dataSRC into a .fits and .evt totaled file
 		: total.evt : summed event files of observations
 		: total.fits : summed fits images of observations for detection and plotting
-
-Directory : old_ignore : directory inside source directories which contains files to be ignored by programs
 
 Program : ximage_detect.py : use Ximage to detect sources
 
@@ -52,7 +52,7 @@ File : skip[i].txt : tells analysis programs to skip this individual XRT source
 
 File : rm_processed_files.py : deletes all processed files other than sw{ObsID}po_cl.evt and sw{ObsID}po_ex.img files and those in old_ignore
 
-Subdirectory : old_ignore : safe folder to archive old or bad data for a 4FGL target
+Subdirectory : old_ignore : safe folder to archive old or bad data for a given source
 
 For more assistance, contact Kyle Neumann: kdn5172@psu.edu
  
